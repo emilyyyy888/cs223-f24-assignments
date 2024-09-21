@@ -18,7 +18,11 @@ typedef struct {
     float valence;        
 } Song;
 
-// Function to parse a line from the CSV file into a Song 
+/**
+ * Parses a line from the CSV file and converts it into a Song structure.
+ * @param line A string representing one line from the CSV file.
+ * @return A Song struct with parsed information from the line.
+ */
 Song parseSong(char *line) {
     Song song;
 
@@ -46,7 +50,11 @@ Song parseSong(char *line) {
     return song;
 }
 
-// Function to print the list of songs
+/**
+ * Prints the list of songs in a formatted manner.
+ * @param songs An array of Song structs to be printed.
+ * @param numSongs The total number of songs to be printed.
+ */
 void printSongs(Song *songs, int numSongs) {
     printf("Welcome to Dynamic Donna's Danceability Directory.\n\n");
     for (int i = 0; i < numSongs; i++) {

@@ -20,7 +20,7 @@ int main() {
     scanf("%s", buff);
 
     int inputLength = strlen(buff);
-    int outputLength = inputLength + inputLength * pauseLen;
+    int outputLength = inputLength * (pauseLen + 1) + 1;
 
     // Allocate memory for the Ent-speech phrase
     entPhrase = malloc(outputLength * sizeof(char));
