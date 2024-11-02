@@ -1,3 +1,9 @@
+/*----------------------------------------------
+ * Author: Emily Lu
+ * Date: Nov 1 2024
+ * Description: implement a simple shell.
+ ---------------------------------------------*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -33,12 +39,11 @@ void execute_command(char *line) {
         args[i] = strtok(NULL, " ");
     }
 
-    // Handle built-in "exit" command
     if (args[0] == NULL) {
         return;
     } else if (strcmp(args[0], "exit") == 0) {
         exit(0);
-    } else if (strcmp(args[0], "cd") == 0) {  // Built-in "cd" command
+    } else if (strcmp(args[0], "cd") == 0) {  
         if (args[1] == NULL) {
             fprintf(stderr, "myshell: expected argument to \"cd\"\n");
         } else if (chdir(args[1]) != 0) {
@@ -49,6 +54,7 @@ void execute_command(char *line) {
 
     // Fork a child process to execute other commands
     pid_t pid = fork();
+    int status;
     if (pid == 0) {  // Child process
         if (execvp(args[0], args) == -1) {
             printf(ANSI_COLOR_RED "myshell: command not found: %s\n" ANSI_COLOR_RESET, args[0]);
@@ -57,7 +63,7 @@ void execute_command(char *line) {
     } else if (pid < 0) {  // Error forking
         perror("fork failed");
     } else {  // Parent process
-        waitpid(pid, NULL, 0);  // Wait for the child process to finish
+        waitpid(pid, &status, 0);
     }
 }
 
@@ -70,7 +76,7 @@ int main() {
 
         // Read input using readline
         line = readline("");
-        if (line == NULL || strcmp(line, "exit") == 0) {  // Exit on EOF or "exit"
+        if (line == NULL || strcmp(line, "exit") == 0) {  
             free(line);
             break;
         }
@@ -81,7 +87,6 @@ int main() {
             execute_command(line);
         }
 
-        // Free the line buffer allocated by readline
         free(line);
     }
 
