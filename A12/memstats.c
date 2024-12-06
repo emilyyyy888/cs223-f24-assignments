@@ -1,3 +1,9 @@
+/*----------------------------------------------
+* Author: Emily Lu
+* Date: 12/5/2024
+* Description: Implement the function memstats to print information.
+---------------------------------------------*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -17,6 +23,42 @@ struct chunk {
 };
 
 void memstats(struct chunk* freelist, void* buffer[], int len) {
+  int total_blocks = 0;
+  int free_blocks = 0;
+  int used_blocks = 0;
+
+  int total_memory = 0;
+  int free_memory = 0;
+  int used_memory = 0;
+  int underutilized = 0;
+
+  //count free blocks and free memory
+  struct chunk* curr = freelist;
+  while (curr != NULL) {
+    free_blocks++;
+    free_memory += curr->size;
+    curr = curr->next;
+  }
+
+  //count used blocks and memory
+  for(int i = 0; i < len; i++) {
+    if(buffer[i] != NULL) {
+      struct chunk* cnk = (struct chunk*)((struct chunk*)buffer[i] - 1);
+      used_blocks++;
+      used_memory += cnk->size;
+      if (cnk-> size > cnk-> used) {
+        underutilized += cnk->size - cnk->used;
+      }
+    }
+  }
+
+  total_memory = used_memory + free_memory;
+  total_blocks = free_blocks + used_blocks;
+  float under_pcr = (float)underutilized / (float)used_memory;
+
+  printf("Total blocks: %d  Free Blocks: %d Used Blocks: %d\n", total_blocks, free_blocks, used_blocks);
+  printf("Total memory allocated: %d Free memory: %d Used memory: %d\n", total_memory, free_memory, used_memory);
+  printf("Underutilized memory: %.2f\n", under_pcr);
 }
 
 int main ( int argc, char* argv[]) {
